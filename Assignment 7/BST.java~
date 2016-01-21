@@ -1,0 +1,184 @@
+import java.util.Arrays;
+public class BST<T extends Comparable<T>> {
+    
+    private Node root;
+    
+    public void insert(T v) {
+        root = insert(root, v);
+    }
+    
+    public static Node<Integer> makeTree1() //this creates trees because this is not a binary search tree
+    {                                           
+        Node<Integer> r = new Node<Integer>(5);
+        Node<Integer> a = new Node<Integer>(7);
+        Node<Integer> b = new Node<Integer>(12);
+        Node<Integer> c = new Node<Integer>(4);
+        Node<Integer> d = new Node<Integer>(2);
+        Node<Integer> e = new Node<Integer>(6);
+        Node<Integer> f = new Node<Integer>(20);
+        Node<Integer> g = new Node<Integer>(15);
+        Node<Integer> h = new Node<Integer>(6);
+        Node<Integer> i = new Node<Integer>(7);
+        Node<Integer> j = new Node<Integer>(52);
+        Node<Integer> k = new Node<Integer>(45);
+        Node<Integer> l = new Node<Integer>(8);
+        Node<Integer> m = new Node<Integer>(46);
+        Node<Integer> n = new Node<Integer>(30);
+
+        r.left = a; 
+        r.right = b; 
+
+        a.left = c;
+        a.right = d;
+        b.left = e;
+        b.right = f;
+
+        c.left = g;
+        c.right = h;
+        d.left = i;
+        d.right = j;
+        e.left = k;
+        e.right = l;
+        f.left = m;
+        f.right = n;
+
+        return r;
+    }
+    
+    //for convenience, I used an indexing where only one value was used
+    //instead of a key and a value inside of the key
+    private Node insert(Node<T> x,T v) {
+        if (x == null) return new Node(v);
+        int cmp = v.compareTo(x.val);
+        if (cmp < 0) x.left = insert(x.left, v);
+        if (cmp > 0) x.right = insert(x.right, v);
+        if (cmp == 0) return x;
+        return x;
+    }
+    
+    public static int[] inOrderArray(int[] a) {
+        int[] x = a.clone();
+        Arrays.sort(x);
+        return x;
+    }
+    
+    public static Node CreateTree(int[] a) {
+        int prelength = a.length;
+        int[] inorder = inOrderArray(a);
+        //System.out.println(Arrays.toString(inorder));
+        int inlength = inorder.length;
+        return CreateTree(a,0,prelength-1,inorder,0,inlength-1);
+    }
+    
+    public static Node CreateTree(int[] a, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
+        if (inStart > inEnd) return null;
+        int rVal = a[preStart];
+        int rIndex = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == rVal) {
+                rIndex = i;
+                break;
+            }
+        }
+        int len = rIndex - inStart;
+        Node r = new Node(rVal);
+        r.left = CreateTree(a, preStart+1, preStart+len, inorder, inStart, rIndex-1);
+        r.right = CreateTree(a, preStart+len+1, preEnd, inorder, rIndex+1, inEnd);
+        return r;
+    }
+    
+    public static boolean isBST(Node a) {
+        return isBST(a, -999999, 999999);
+    }
+    
+    private static boolean isBST(Node a, int min, int max) {
+        if (a == null) return true;
+        if ((Integer) a.val > min && (Integer) a.val < max && isBST(a.left, min, (Integer) a.val)
+                && isBST(a.right, (Integer) a.val, max)) {
+            return true;
+        }
+        else return false;
+    }
+    
+    public static boolean isBalanced(Node a) {
+        int lSide = height(a.left);
+        int rSide = height(a.right);
+        if (Math.abs(lSide-rSide) == 1) return true;
+        if (Math.abs(lSide-rSide) == 0) return true;
+        return false;
+    }
+    
+    public static void preOrder(Node a) {
+        if (a == null) return;
+        System.out.print(a.val + " ");
+        preOrder(a.left);
+        preOrder(a.right);
+    }
+    
+    public static void inOrder(Node a) {
+        if (a == null) return;
+        inOrder(a.left);
+        System.out.print(a.val + " ");
+        inOrder(a.right);
+    }
+    
+    public static int height(Node a) {
+        if (a == null) return 0;
+        else {
+            return 1 + Math.max(height(a.left), height(a.right));
+        }
+    }
+    
+    public Node root() {
+        return root;
+    }
+    
+    public static void main(String[] args) {
+        BST a = new BST<Integer>();
+        Node x = a.root();
+        a.insert(5);
+        a.insert(10);
+        x = a.root();
+        a.insert(20);
+        x = a.root();
+        a.insert(4);
+        a.insert(6);
+        x = a.root();
+        a.insert(2);
+        a.insert(32);
+        a.insert(32);
+        a.insert(35);
+        x = a.root();
+        //preOrder(x);
+        //System.out.println();
+        //inOrder(x);
+        //System.out.println();
+        //System.out.println(isBalanced(x));
+        int[] y = {5,2,1,4,7,6,20};
+        Node b = CreateTree(y);
+        Node c = makeTree1();
+        System.out.println(isBST(x));
+        System.out.println(isBST(b));
+        System.out.println(isBST(c));
+        preOrder(b);
+        System.out.println();
+        inOrder(b);
+    }
+}
+
+class Node<T> {
+    
+    Node left;
+    Node right;
+    T val;
+    Node(T val)
+    {
+        this.val = val;
+        left = null;
+        right = null;
+    }
+    public String toString()
+    {
+        return val+"";
+    }
+}

@@ -1,0 +1,84 @@
+public class QueueByStack<T> {
+       private Stack<T> a;
+       private Stack<T> b;
+       private Stack<T> m;
+       
+       public QueueByStack() {
+           a = new Stack<T>();
+           b = new Stack<T>();
+           m = new Stack<T>();
+       }
+
+       private void move()
+       {
+           while(!a.isEmpty())
+           {
+               T v = a.peek();
+               b.push(v);
+               a.pop();
+           }
+       }
+
+       public void enqueue(T v)
+       {
+           a.push(v);
+           if (m.isEmpty())
+           {
+               m.push(v);
+           }
+           else if ((Integer) v > (Integer) m.peek())
+           {
+               m.push(v);
+               m.show();
+           }
+       }
+   
+       public T front() {
+           if ( b.isEmpty() )
+              move();
+           return b.peek();
+       }
+
+       public void dequeue()
+       {
+           if ( b.isEmpty() )
+              move();
+           b.pop();
+       }
+
+       public boolean isEmpty()
+       {
+          return a.isEmpty() && b.isEmpty();
+       }
+
+       public void print()
+       {
+           while( !isEmpty() )
+           {
+               System.out.print(front() + " ");
+               dequeue();
+           }
+       }
+       
+       public int max()
+       {
+           return (Integer) m.peek();
+       }
+
+       public static void main(String[] args)
+       {
+           QueueByStack<Integer> q = new QueueByStack<Integer>();
+           q.enqueue(1);
+           q.enqueue(2);
+           q.enqueue(3);
+           q.enqueue(1);
+           System.out.println(q.max());
+//           q.dequeue();
+//           q.dequeue();
+//           q.enqueue(4);
+//           q.enqueue(5);
+//           q.enqueue(6);
+//           q.print();
+
+       }
+}
